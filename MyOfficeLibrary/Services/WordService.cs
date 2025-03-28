@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Word;
 
 namespace MyOfficeLibrary.Services
 {
@@ -14,6 +13,27 @@ namespace MyOfficeLibrary.Services
         {
             _wordApp = new Application();
             _wordApp.Visible = visible;
+        }
+
+        public bool CreateFile(string? filePath = null)
+        {
+            try
+            {
+                _document = _wordApp.Documents.Add();
+                _isOpen = true;
+
+                if (filePath != null)
+                {
+                    _document.SaveAs(filePath);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при создании Word файла: {ex.Message}");
+                return false;
+            }
         }
 
         public bool OpenFile(string filePath)
@@ -81,6 +101,69 @@ namespace MyOfficeLibrary.Services
                 _wordApp.Quit();
                 Marshal.ReleaseComObject(_wordApp);
                 _wordApp = null;
+            }
+        }
+
+        public string? ReadAllText()
+        {
+            if (!_isOpen || _document == null) return null;
+            return _document.Content.Text;
+        }
+
+        public bool ReplaceText(string searchText, string replaceText)
+        {
+            if (!_isOpen || _document == null) return false;
+
+            var range = _document.Content;
+            range.Find.Text = searchText;
+            range.Find.Replacement.Text = replaceText;
+
+            object replaceAll = WdReplace.wdReplaceAll;
+            range.Find.Execute(Replace: ref replaceAll);
+
+            return true;
+        }
+
+        public bool AddHeading(string text)
+        {
+            if (!_isOpen || _document == null) return false;
+
+            try
+            {
+                Paragraph paragraph = _document.Content.Paragraphs.Add();
+                paragraph.Range.Text = text;
+                paragraph.Range.InsertParagraphAfter();
+
+                var range = paragraph.Range;
+                range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                range.Font.Size = 16;
+                range.Font.Bold = 1;
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка добавления заголовка: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool AddParagraph(string text)
+        {
+            if (!_isOpen || _document == null) return false;
+
+            try
+            {
+                Paragraph paragraph = _document.Content.Paragraphs.Add();
+                paragraph.Range.Text = text;
+                paragraph.Range.InsertParagraphAfter();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при добавлении параграфа: {ex.Message}");
+                return false;
             }
         }
     }

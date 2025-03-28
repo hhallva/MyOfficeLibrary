@@ -1,19 +1,25 @@
-﻿using Excel = Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace MyOfficeLibrary.Services
 {
     public class ExcelService : IOfficeService
     {
-        private Excel.Application _excelApp;
-        private Excel.Workbook _workbook;
-        private Excel.Worksheet _worksheet;
+        private Application _excelApp;
+        private Workbook _workbook;
+        private Worksheet _worksheet;
         private bool _isOpen = false;
 
         public ExcelService(bool visible)
         {
-            _excelApp = new Excel.Application();
-            _excelApp.Visible = visible; 
+            _excelApp = new Application();
+            _excelApp.Visible = visible;
+        }
+
+        public bool CreateFile(string? filePath = null)
+        {
+            throw new NotImplementedException();
         }
 
         public bool OpenFile(string filePath)
