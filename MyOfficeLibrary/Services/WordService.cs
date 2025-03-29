@@ -77,13 +77,18 @@ namespace MyOfficeLibrary.Services
             return true;
         }
 
-        public bool ExportToPdf(string filePath)
+        public bool ExportToPdf(string filePath, string subject, string body)
         {
-            if (!_isOpen || _document == null) return false;
+            if (!_isOpen || _document == null) 
+                return false;
 
             try
             {
-                _document.ExportAsFixedFormat(filePath, WdExportFormat.wdExportFormatPDF);
+                CreateFile(filePath);
+                AddHeading(subject);
+                AddParagraph(body);
+
+                //_document.SaveAs(filePath, WdExportFormat.wdExportFormatPDF);
                 return true;
             }
             catch (Exception ex)
@@ -106,13 +111,15 @@ namespace MyOfficeLibrary.Services
 
         public string? ReadAllText()
         {
-            if (!_isOpen || _document == null) return null;
+            if (!_isOpen || _document == null) 
+                return null;
             return _document.Content.Text;
         }
 
         public bool ReplaceText(string searchText, string replaceText)
         {
-            if (!_isOpen || _document == null) return false;
+            if (!_isOpen || _document == null) 
+                return false;
 
             var range = _document.Content;
             range.Find.Text = searchText;
@@ -126,7 +133,8 @@ namespace MyOfficeLibrary.Services
 
         public bool AddHeading(string text)
         {
-            if (!_isOpen || _document == null) return false;
+            if (!_isOpen || _document == null) 
+                return false;
 
             try
             {
@@ -151,7 +159,8 @@ namespace MyOfficeLibrary.Services
 
         public bool AddParagraph(string text)
         {
-            if (!_isOpen || _document == null) return false;
+            if (!_isOpen || _document == null) 
+                return false;
 
             try
             {

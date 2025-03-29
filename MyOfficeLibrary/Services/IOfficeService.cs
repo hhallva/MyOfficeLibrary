@@ -11,7 +11,6 @@ namespace MyOfficeLibrary.Services
         bool CreateFile(string? filePath = null);
         bool OpenFile(string filePath);
         bool SaveFile(string filePath);
-        bool ExportToPdf(string filePath);
         bool CloseFile();
     }
 }
