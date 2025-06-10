@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.Word">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>7</VersionMinor>
@@ -25,10 +31,6 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

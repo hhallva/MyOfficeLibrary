@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOfficeLibrary", "MyOfficeLibrary\MyOfficeLibrary.csproj", "{02300FEA-DCC9-426D-B3CA-4A3609413B5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator", "ReportGenerator\ReportGenerator.csproj", "{4531E7A7-3C60-415E-9BDA-DFCA0811A3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{02300FEA-DCC9-426D-B3CA-4A3609413B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02300FEA-DCC9-426D-B3CA-4A3609413B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02300FEA-DCC9-426D-B3CA-4A3609413B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4531E7A7-3C60-415E-9BDA-DFCA0811A3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4531E7A7-3C60-415E-9BDA-DFCA0811A3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4531E7A7-3C60-415E-9BDA-DFCA0811A3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4531E7A7-3C60-415E-9BDA-DFCA0811A3DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF71EFA0-30BA-40D7-B02E-D674C33BF51C}
 	EndGlobalSection
 EndGlobal
