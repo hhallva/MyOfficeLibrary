@@ -120,5 +120,15 @@ namespace MyOfficeLibrary.Services
                 return null;
             }
         }
+
+        public void ProcessDocument(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MergeDocuments(string folderPath, string outputFile)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

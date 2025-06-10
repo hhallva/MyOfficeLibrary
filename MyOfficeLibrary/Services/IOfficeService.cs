@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyOfficeLibrary.Services
+﻿namespace MyOfficeLibrary.Services
 {
     public interface IOfficeService : IDisposable
     {
@@ -12,5 +6,8 @@ namespace MyOfficeLibrary.Services
         bool OpenFile(string filePath);
         bool SaveFile(string filePath);
         bool CloseFile();
+
+        void ProcessDocument(string filePath);
+        void MergeDocuments(string folderPath, string outputFile);
     }
 }

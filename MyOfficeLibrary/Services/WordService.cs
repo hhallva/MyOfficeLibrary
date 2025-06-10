@@ -11,10 +11,10 @@ namespace MyOfficeLibrary.Services
 
         public WordService(bool visible)
         {
-            _wordApp = new Application();
-            _wordApp.Visible = visible;
+            _wordApp = new Application { Visible = visible, DisplayAlerts = WdAlertLevel.wdAlertsNone };
         }
 
+        #region Базовые функции
         public bool CreateFile(string? filePath = null)
         {
             try
@@ -79,7 +79,7 @@ namespace MyOfficeLibrary.Services
 
         public bool ExportToPdf(string filePath, string subject, string body)
         {
-            if (!_isOpen || _document == null) 
+            if (!_isOpen || _document == null)
                 return false;
 
             try
@@ -98,6 +98,13 @@ namespace MyOfficeLibrary.Services
             }
         }
 
+        public string? ReadAllText()
+        {
+            if (!_isOpen || _document == null)
+                return null;
+            return _document.Content.Text;
+        }
+
         public void Dispose()
         {
             CloseFile();
@@ -108,17 +115,12 @@ namespace MyOfficeLibrary.Services
                 _wordApp = null;
             }
         }
+        #endregion
 
-        public string? ReadAllText()
-        {
-            if (!_isOpen || _document == null) 
-                return null;
-            return _document.Content.Text;
-        }
-
+        #region Работа с текстом
         public bool ReplaceText(string searchText, string replaceText)
         {
-            if (!_isOpen || _document == null) 
+            if (!_isOpen || _document == null)
                 return false;
 
             var range = _document.Content;
@@ -133,7 +135,7 @@ namespace MyOfficeLibrary.Services
 
         public bool AddHeading(string text)
         {
-            if (!_isOpen || _document == null) 
+            if (!_isOpen || _document == null)
                 return false;
 
             try
@@ -159,7 +161,7 @@ namespace MyOfficeLibrary.Services
 
         public bool AddParagraph(string text)
         {
-            if (!_isOpen || _document == null) 
+            if (!_isOpen || _document == null)
                 return false;
 
             try
@@ -174,6 +176,26 @@ namespace MyOfficeLibrary.Services
                 Console.WriteLine($"Ошибка при добавлении параграфа: {ex.Message}");
                 return false;
             }
+        }
+        #endregion
+
+        public void ProcessDocument(string filePath)
+        {
+            //try
+            //{
+                OpenFile(filePath);
+                DocumentHelper.ProcessSections(_document);
+                //SaveFile(_document.FullName);
+            //}
+            //finally
+            //{
+            //    Dispose();
+            //}
+        }
+
+        public void MergeDocuments(string folderPath, string outputFile)
+        {
+            throw new NotImplementedException();
         }
     }
 }
