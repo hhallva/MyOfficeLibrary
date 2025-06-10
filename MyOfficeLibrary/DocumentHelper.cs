@@ -1,6 +1,4 @@
-﻿
-using Microsoft.Office.Interop.Word;
-using System.Reflection.PortableExecutable;
+﻿using Microsoft.Office.Interop.Word;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace MyOfficeLibrary
@@ -23,10 +21,46 @@ namespace MyOfficeLibrary
         {
             _doc = doc;
 
+            RemoveHeader();
             CreateChapters();
             CreateQuestions();
             CreateConclusion();
         }
+
+        private static void RemoveHeader()
+        {
+            try
+            {
+                if (_doc.Sections.Count >= 1)
+                {
+                    Section firstSection = _doc.Sections[1];
+
+                    if (firstSection.PageSetup.DifferentFirstPageHeaderFooter != 1)
+                    {
+                        HeaderFooter firstPageHeader = firstSection.Headers[WdHeaderFooterIndex.wdHeaderFooterFirstPage];
+                        if (firstPageHeader != null && firstPageHeader.Exists)
+                        {
+                            firstPageHeader.Range.Delete();
+                            firstPageHeader.LinkToPrevious = false;
+                        }
+                    }
+                    else
+                    {
+                        HeaderFooter primaryHeader = firstSection.Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary];
+                        if (primaryHeader != null && primaryHeader.Exists)
+                        {
+                            primaryHeader.Range.Delete();
+                            primaryHeader.LinkToPrevious = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при удалении первого колонтитула: {ex.Message}");
+            }
+        }
+        
 
         private static void CreateChapters()
         {
@@ -62,18 +96,18 @@ namespace MyOfficeLibrary
         {
             try
             {
-                 List<Paragraph> headerParagraphs = GetHeaders();
+                List<Paragraph> headerParagraphs = GetHeaders();
 
                 var start = headerParagraphs[0].Range.Start;
                 var end = headerParagraphs[1].Range.Start;
 
                 Word.Range chapter = _doc.Range(start, end);
                 chapter.Copy();
-                
+
                 Word.Range endRange = _doc.Range(_doc.Content.End - 1, _doc.Content.End - 1);
                 endRange.Paste();
                 _doc.Range(_doc.Content.End - 1, _doc.Content.End).Delete();
-             
+
                 Word.Range newChapterRange = _doc.Range(endRange.Start, _doc.Content.End);
 
                 ProcessCopiedChapter(newChapterRange);
@@ -85,41 +119,6 @@ namespace MyOfficeLibrary
             }
         }
 
-        private static void ProcessCopiedChapter(Word.Range chapterRange)
-        {
-           
-            foreach (Paragraph para in chapterRange.Paragraphs)
-            {
-                if (IsHeader(para))
-                {
-                    ChangeHeaderText(para, "Вывод");
-                    break;
-                }
-            }
-
-            var count = chapterRange.Paragraphs.Count;
-            for (int i = 1; i <= count; i++)
-            {
-                var para = chapterRange.Paragraphs[i];
-                if (IsSubHeader(para))
-                {
-                    string text = $"В ходе проделанной лабораторной работы {TransformVerbs(para.Range.Text.Trim('\r', '\a', ' '))}\r";
-                    para.Range.Text = text;
-                }
-            }
-        }
-
-        private static bool IsSubHeader(Paragraph paragraph)
-        {
-            try
-            {
-                return paragraph.get_Style().NameLocal == "Основная нумерация 2";
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private static List<Paragraph> GetHeaders()
         {
@@ -134,13 +133,23 @@ namespace MyOfficeLibrary
             return headerParagraphs;
         }
 
-
-        #region Готово
         private static bool IsHeader(Paragraph paragraph)
         {
             try
             {
                 return paragraph.get_Style().NameLocal == "Основная нумерация 1";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool IsSubHeader(Paragraph paragraph)
+        {
+            try
+            {
+                return paragraph.get_Style().NameLocal == "Основная нумерация 2";
             }
             catch
             {
@@ -159,6 +168,7 @@ namespace MyOfficeLibrary
                 return false;
             }
         }
+
 
         private static void RemoveSectionContent(Paragraph header, List<Paragraph> allHeaders, int currentIndex)
         {
@@ -181,6 +191,30 @@ namespace MyOfficeLibrary
             catch (Exception ex)
             {
                 Console.WriteLine($"Ошибка удаления раздела: {ex.Message}");
+            }
+        }
+
+        private static void ProcessCopiedChapter(Word.Range chapterRange)
+        {
+
+            foreach (Paragraph para in chapterRange.Paragraphs)
+            {
+                if (IsHeader(para))
+                {
+                    ChangeHeaderText(para, "Вывод");
+                    break;
+                }
+            }
+
+            var count = chapterRange.Paragraphs.Count;
+            for (int i = 1; i <= count; i++)
+            {
+                var para = chapterRange.Paragraphs[i];
+                if (IsSubHeader(para))
+                {
+                    string text = $"В ходе проделанной лабораторной работы {TransformVerbs(para.Range.Text.Trim('\r', '\a', ' '))}\r";
+                    para.Range.Text = text;
+                }
             }
         }
 
@@ -210,7 +244,7 @@ namespace MyOfficeLibrary
                     answerRange.SetRange(endPos, endPos);
                     answerRange.Text = "Ответ:\n";
                     answerRange.set_Style("Без интервала");
-                
+
                     answerRange.Font.Name = "Times New Roman";
                     answerRange.Font.Size = 14;
 
@@ -227,7 +261,6 @@ namespace MyOfficeLibrary
                 Console.WriteLine($"Ошибка при добавлении ответа: {ex.Message}");
             }
         }
-        #endregion
 
         private static string TransformVerbs(string objective)
         {
